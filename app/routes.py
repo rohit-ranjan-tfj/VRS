@@ -22,7 +22,7 @@ def before_request():
 def index():
     form = MovieForm()
     if form.validate_on_submit():
-        movie = Movie(name=form.name.data,description = form.description.data, genre = form.genre.data,rating=form.rating.data,price = form.price.data,quantity=form.quantity.data)
+        movie = Movie(name=form.name.data,description = form.description.data, genre = form.genre.data,rating=form.rating.data,price = form.price.data,quantity=form.quantity.data, img_path=form.img_path.data)
         db.session.add(movie)
         db.session.commit()
         flash('The movie is now live on the store!')
