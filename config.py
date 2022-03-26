@@ -13,5 +13,6 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['your-email@example.com']
+    SYS_PASSWORD = 123456
     POSTS_PER_PAGE = 25
     MOVIES_PER_PAGE = 25
