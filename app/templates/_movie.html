@@ -2,7 +2,7 @@
         <tr>
             <td>
                 Added {{ moment(movie.timestamp).fromNow() }}:
-                <br>
+                <!-- <br>
                 {{ movie.name }}
                 <br>
                 {{ movie.genre }}
@@ -11,7 +11,21 @@
                 <br>
                 {{ movie.rating }}
                 <br>
-                {{ movie.price }}
+                {{ movie.price }} -->
+                <p>&nbsp;</p>
+                <h2 style="color: #2e6c80;">&nbsp;</h2>
+                <p>&nbsp;</p>
+                <ol style="list-style: none; font-size: 14px; line-height: 32px; font-weight: bold;">
+                <li style="clear: both;"><img style="float: left;" src=' {{ movie.img_path }} ')  width="196" height="182" /></li>
+                </ol>
+                <p style="font-size: 18px;"><strong>&nbsp; {{ movie.name }}&nbsp; &nbsp; &nbsp; &nbsp;</strong></p>
+                <p style="font-size: 14px;">&nbsp; &nbsp;{{ movie.genre }}</p>
+                <p style="font-size: 12px;">&nbsp; &nbsp;<strong> Rating : {{ movie.rating }}</strong></p>
+                <p style="font-size: 12px;"><strong><span style="font-size: 12px;">&nbsp; &nbsp; Description</span></strong></p>
+                <p style="font-size: 12px;"><strong><span style="font-size: 12px;">&nbsp; &nbsp; Price : {{ movie.price }}&nbsp;</span></strong></p>
+                <p style="font-size: 12px;"><strong><span style="font-size: 12px;">&nbsp; &nbsp; Quantity : {{ movie.quantity }}&nbsp;</span></strong></p>
+                <p style="font-size: 12px;">&nbsp;</p>
+                <p><strong>&nbsp;&nbsp;</strong></p>
             </td>
         </tr>
     </table>

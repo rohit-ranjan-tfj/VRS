@@ -96,6 +96,7 @@ class PostForm(FlaskForm):
 
 class MovieForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
+    img_path = TextAreaField('Image URL', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     genre = StringField('Genre', validators=[DataRequired()])
     rating = IntegerField('Rating', validators=[DataRequired(),NumberRange(min=1,max=10)])

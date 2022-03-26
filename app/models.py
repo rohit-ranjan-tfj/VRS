@@ -102,6 +102,7 @@ class Post(db.Model):
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(40))
+    img_path = db.Column(db.String(140))
     description = db.Column(db.String(140))
     genre = db.Column(db.String(40))
     rating = db.Column(db.Integer)
