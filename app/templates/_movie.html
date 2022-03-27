@@ -2,6 +2,7 @@
         <tr>
             <td width="300px"><img width="300" height="400" src="{{ movie.img_path }}" alt="https://previews.123rf.com/images/pavelstasevich/pavelstasevich1811/pavelstasevich181101028/112815904-.jpg"></td>
             <td>
+                
                 <h1>{{ movie.name }}</h1>
                 {% if movie.timestamp %}
                 <p>Added {{ moment(movie.timestamp).fromNow() }}</p>
@@ -13,10 +14,26 @@
                 {% if current_user.is_authenticated %}
                 {% if current_user.user_cat=='user' %}
                 <form method="post" >
+                    <a href="{{ url_for('movie', id=movie.id) }}">
+                    <input type="button" class="btn btn-info" value="View Movie ID {{ movie.id }}" name="View Movie">
+                    </a>
                     <input type="submit" class="btn btn-info" value="Rent Movie ID {{ movie.id }}" name="Rent Movie">
                 </form>
-                {% endif %} 
+                {% else %}
+                <form method="post" >
+                    <a href="{{ url_for('movie', id=movie.id) }}">
+                    <input type="button" class="btn btn-info" value="View Movie ID {{ movie.id }}" name="View Movie">
+                    </a>
+                </form>
                 {% endif %}
+                {% else %} 
+                <form method="post" >
+                    <a href="{{ url_for('movie', id=movie.id) }}">
+                    <input type="button" class="btn btn-info" value="View Movie ID {{ movie.id }}" name="View Movie">
+                    </a>
+                </form>
+                {% endif %}
+                
             </td>
         </tr>
     </table>
