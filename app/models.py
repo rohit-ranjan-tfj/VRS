@@ -76,32 +76,6 @@ class User(UserMixin, db.Model):
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256')
 
-    def view_balance(self):
-        if (self.user_cat == 'user'):
-            if not self.balance:
-                self.balance = 0
-            print('Your balance is Rs. {}'.format(self.balance))
-        
-        else:
-            print('Applicable for users only.')
-
-    def add_balance(self, amount):
-        if (self.user_cat == 'user'):
-            try:
-                if amount <0:
-                    raise ValueError('Amount must be positive')
-            except ValueError as ve:
-                print(ve)
-                return
-            
-            if not self.balance:
-                self.balance = 0
-            self.balance = amount + self.balance
-            print("Amount added successfully. Your new balance is Rs. {}".format(self.balance))
-        
-        else:
-            print('Applicable for users only.')
-
     @staticmethod
     def verify_reset_password_token(token):
         try:
@@ -174,20 +148,7 @@ class Order(db.Model):
     def __repr__(self):
         return '<Order {} {} {} {}>'.format(self.id, self.user_id, self.movie_id, self.timestamp)
 
-    def generate_receipt(self):
-        receipt = FPDF()
-        receipt.add_page()
-        receipt.set_font('Arial', 'B', 16)
-        receipt.cell(200, 10, 'Movie Rentals', 0, 1, 'C')
-        receipt.set_font('Arial', '', 12)
-        receipt.cell(200, 10, 'Order ID: {}'.format(self.id), 0, 1, 'C')
-        receipt.cell(200, 10, txt=f"Movie ID: {self.movie_id}", ln=1, align="C")
-        receipt.cell(200, 10, txt=f"Customer ID: {self.user_id}", ln=1, align="C")
-        receipt.cell(200, 10, txt=f"Total Price: {self.price}", ln=1, align="C")
-        receipt.cell(200, 10, txt=f" Date: {self.timestamp}", ln=1, align="C")
-        #receipt.cell(200, 10, txt=f"End Date: {self.endDate}", ln=1, align="C")
-        receipt.cell(200, 10, txt=f"Order Status: {self.status}", ln=1, align="C")
-        receipt.output("receipt" + str(self.id)+".pdf")
+    
 
     
             
