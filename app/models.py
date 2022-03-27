@@ -117,7 +117,7 @@ class Movie(db.Model):
         backref=db.backref('rented', lazy='dynamic'), lazy='dynamic')
     
     def __repr__(self):
-        return '<Movie {} {} {} {}>'.format(self.name, self.genre, self.rating, self.price)
+        return '<Movie {} {} {} {} {}>'.format(self.id, self.name, self.genre, self.rating, self.price)
 
     def rent(self, user):
         if not self.is_rented(user):
@@ -133,5 +133,18 @@ class Movie(db.Model):
                 return True
         except :
             return False
+
+
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    status = db.Column(db.String(40))
+    price = db.Column(db.Float)
+    quantity = db.Column(db.Integer)
+    
+    def __repr__(self):
+        return '<Order {} {} {} {}>'.format(self.id, self.user_id, self.movie_id, self.timestamp)
             
         
