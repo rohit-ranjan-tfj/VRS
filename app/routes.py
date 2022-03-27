@@ -79,6 +79,9 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         cat = form.user_cat.data
+        if(cat=='manager'):
+            print(form.username.data)
+            print(form.password.data)
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data) or user.user_cat != cat:
             flash('Invalid credentials')
