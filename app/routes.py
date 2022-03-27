@@ -20,13 +20,8 @@ def before_request():
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    form = MovieForm()
-    if form.validate_on_submit():
-        movie = Movie(name=form.name.data,description = form.description.data, genre = form.genre.data,rating=form.rating.data,price = form.price.data,quantity=form.quantity.data, img_path=form.img_path.data)
-        db.session.add(movie)
-        db.session.commit()
-        flash('The movie is now live on the store!')
-        return redirect(url_for('index'))
+    if request.form.get('Add Movie') == 'Add Movie':
+        return redirect(url_for('add_movie'))
     page = request.args.get('page', 1, type=int)
     movies = Movie.query.order_by(Movie.timestamp.desc()).paginate(
         page, app.config['MOVIES_PER_PAGE'], False)
@@ -34,9 +29,8 @@ def index():
         if movies.has_next else None
     prev_url = url_for('explore', page=movies.prev_num) \
         if movies.has_prev else None
-    if current_user.is_authenticated and current_user.user_cat == 'user':
-        form = None
-    return render_template('index.html', title='Home', form=form,
+
+    return render_template('index.html', title='Home', form=None,
                            movies=movies.items, next_url=next_url,
                            prev_url=prev_url)
 
@@ -228,3 +222,17 @@ def unfollow(username):
         return redirect(url_for('user', username=username))
     else:
         return redirect(url_for('index'))
+
+@app.route('/add_movie', methods=['GET', 'POST'])
+@login_required
+def add_movie():
+    if request.form.get('Back to Dashboard') == 'Back to Dashboard':
+        return redirect(url_for('index'))
+    form = MovieForm()
+    if form.validate_on_submit():
+        movie = Movie(name=form.name.data,description = form.description.data, genre = form.genre.data,rating=form.rating.data,price = form.price.data,quantity=form.quantity.data, img_path=form.img_path.data)
+        db.session.add(movie)
+        db.session.commit()
+        flash('The movie is now live on the store!')
+        return redirect(url_for('add_movie'))
+    return render_template('add_movie.html', title='Home', form=form)
