@@ -67,7 +67,7 @@ def explore():
         if movies.has_next else None
     prev_url = url_for('explore', page=movies.prev_num) \
         if movies.has_prev else None
-    return render_template('index.html', title='Explore', movies=movies.items,
+    return render_template('explore.html', title='Explore', movies=movies.items,
                            next_url=next_url, prev_url=prev_url)
 
 
@@ -175,8 +175,12 @@ def user(username):
 
 
 @app.route('/movie/<id>', methods=['GET', 'POST'])
-@login_required
 def movie(id):
+    if str(request.form.get('Rent Movie'))[:10] == 'Rent Movie':
+        if(current_user.is_authenticated):
+            flash(('Movie ID ' + str(request.form.get('Rent Movie'))[14:] + ' is rented for 30 days'))
+        else:
+            flash('Please login to rent a movie')
     movie = Movie.query.filter_by(id=id).first_or_404()
     page = request.args.get('page', 1, type=int)
     movies = Movie.query.order_by(Movie.timestamp.desc()).paginate(
