@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <table class="table table-hover">
+        <tr>
+            <td width="300px"><img width="300" height="400" src="{{ movie.img_path }}" alt="https://previews.123rf.com/images/pavelstasevich/pavelstasevich1811/pavelstasevich181101028/112815904-.jpg"></td>
+        <td>
+            <h1>{{ movie.name }}</h1>
+            {% if movie.timestamp %}
+            <p>Added {{ moment(movie.timestamp).fromNow() }}</p>
+            {% endif %}
+            <p>{{ movie.genre }}</p>
+            <p>{{ movie.description }}</p>
+            <p>Rating : {{ movie.rating }}/10.0</p>
+            <p>Price : {{ movie.price }}</p>
+            <p>Quantity : {{ movie.quantity }}</p>
+        </td>
+        </tr>
+    </table>
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> Newer Movies
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    Older Movies <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}

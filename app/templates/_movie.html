@@ -1,31 +1,15 @@
     <table class="table table-hover">
         <tr>
+            <td width="300px"><img width="300" height="400" src="{{ movie.img_path }}" alt="https://previews.123rf.com/images/pavelstasevich/pavelstasevich1811/pavelstasevich181101028/112815904-.jpg"></td>
             <td>
-                Added {{ moment(movie.timestamp).fromNow() }}:
-                <!-- <br>
-                {{ movie.name }}
-                <br>
-                {{ movie.genre }}
-                <br>
-                {{ movie.description }}
-                <br>
-                {{ movie.rating }}
-                <br>
-                {{ movie.price }} -->
-                <p>&nbsp;</p>
-                <h2 style="color: #2e6c80;">&nbsp;</h2>
-                <p>&nbsp;</p>
-                <ol style="list-style: none; font-size: 14px; line-height: 32px; font-weight: bold;">
-                <li style="clear: both;"><img style="float: left;" src="{{ movie.img_path }}" ) width="196" height="182" /></li>
-                </ol>
-                <p style="font-size: 18px;"><strong>&nbsp; {{ movie.name }}&nbsp; &nbsp; &nbsp; &nbsp;</strong></p>
-                <p style="font-size: 14px;">&nbsp; &nbsp;{{ movie.genre }}</p>
-                <p style="font-size: 12px;">&nbsp; &nbsp;<strong> Rating : {{ movie.rating }}</strong></p>
-                <p style="font-size: 12px;"><strong><span style="font-size: 12px;">&nbsp; &nbsp; Description</span></strong></p>
-                <p style="font-size: 12px;"><strong><span style="font-size: 12px;">&nbsp; &nbsp; Price : {{ movie.price }}&nbsp;</span></strong></p>
-                <p style="font-size: 12px;"><strong><span style="font-size: 12px;">&nbsp; &nbsp; Quantity : {{ movie.quantity }}&nbsp;</span></strong></p>
-                <p style="font-size: 12px;">&nbsp;</p>
-                <p><strong>&nbsp;&nbsp;</strong></p>
+                <h1>{{ movie.name }}</h1>
+                {% if movie.timestamp %}
+                <p>Added {{ moment(movie.timestamp).fromNow() }}</p>
+                {% endif %}
+                <p>{{ movie.genre }}</p>
+                <p>Rating : {{ movie.rating }}/10.0</p>
+                <p>Price : {{ movie.price }}</p>
+                <p>Quantity : {{ movie.quantity }}</p>
             </td>
         </tr>
     </table>

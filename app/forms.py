@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
-    TextAreaField, IntegerField 
+    TextAreaField, IntegerField, FloatField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, \
     Length,NumberRange
 from app import app
@@ -99,7 +99,7 @@ class MovieForm(FlaskForm):
     img_path = TextAreaField('Image URL', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     genre = StringField('Genre', validators=[DataRequired()])
-    rating = IntegerField('Rating', validators=[DataRequired(),NumberRange(min=1,max=10)])
-    price = IntegerField('Price', validators=[DataRequired(),NumberRange(min=1,max=1000)])
+    rating = FloatField('Rating', validators=[DataRequired(),NumberRange(min=1,max=10)])
+    price = FloatField('Price', validators=[DataRequired(),NumberRange(min=1,max=1000)])
     quantity = IntegerField('Quantity', validators=[DataRequired(),NumberRange(min=1,max=1000)])
     submit = SubmitField('Submit')

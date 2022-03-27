@@ -158,6 +158,21 @@ def user(username):
                            next_url=next_url, prev_url=prev_url, form=form)
 
 
+@app.route('/movie/<id>')
+@login_required
+def movie(id):
+    movie = Movie.query.filter_by(id=id).first_or_404()
+    page = request.args.get('page', 1, type=int)
+    movies = Movie.query.order_by(Movie.timestamp.desc()).paginate(
+        page, app.config['MOVIES_PER_PAGE'], False)
+    next_url = url_for('movie',id=Movie.query.order_by(Movie.id.data)[-1], page=movies.next_num) \
+        if movies.has_next else None
+    prev_url = url_for('movie',id=Movie.query.order_by(Movie.id.data)[0], page=movies.prev_num) \
+        if movies.has_prev else None
+    return render_template('movie.html', movie=movie, movies=movies.items,
+                           next_url=next_url, prev_url=prev_url)
+
+
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():

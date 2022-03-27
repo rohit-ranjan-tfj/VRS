@@ -105,8 +105,8 @@ class Movie(db.Model):
     img_path = db.Column(db.String(140))
     description = db.Column(db.String(140))
     genre = db.Column(db.String(40))
-    rating = db.Column(db.Integer)
-    price = db.Column(db.Integer)
+    rating = db.Column(db.Float)
+    price = db.Column(db.Float)
     quantity = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
