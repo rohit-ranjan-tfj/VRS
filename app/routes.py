@@ -3,8 +3,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, StaffRegistrationForm, EditProfileForm, \
-    EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm, MovieForm, AddFundsForm
+from app.forms import *
 from app.models import User, Post, Movie, Order
 from app.email import send_password_reset_email
 from app.functions import *
@@ -209,6 +208,44 @@ def edit_profile():
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', title='Edit Profile',
+                           form=form)
+
+
+@app.route('/edit_movie/<id>', methods=['GET', 'POST'])
+@login_required
+def edit_movie(id):
+    movie = Movie.query.filter_by(id=id).first_or_404()
+    if movie is None:
+        flash('Movie not found')
+        return redirect(url_for('explore'))
+    form = EditMovieForm(movie)
+    if form.validate_on_submit():
+        if form.name.data is not None:
+            movie.name = form.name.data
+        if form.img_path.data is not None:
+            movie.img_path = form.img_path.data
+        if form.description.data is not None:
+            movie.description = form.description.data
+        if form.genre.data is not None:
+            movie.genre = form.genre.data
+        if form.rating.data is not None:
+            movie.rating = form.rating.data
+        if form.price.data is not None:
+            movie.price = form.price.data
+        if form.quantity.data is not None:
+            movie.quantity = form.quantity.data
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('explore'))
+    elif request.method == 'GET':
+        form.name.data = movie.name
+        form.img_path.data = movie.img_path
+        form.description.data = movie.description
+        form.genre.data = movie.genre
+        form.rating.data = movie.rating
+        form.price.data = movie.price
+        form.quantity.data = movie.quantity
+    return render_template('add_movie.html', title='Edit Movie',
                            form=form)
 
 

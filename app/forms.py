@@ -93,7 +93,6 @@ class AddFundsForm(FlaskForm):
 class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
 
-
 class PostForm(FlaskForm):
     post = TextAreaField('Say something', validators=[DataRequired()])
     submit = SubmitField('Submit')
@@ -107,3 +106,23 @@ class MovieForm(FlaskForm):
     price = FloatField('Price', validators=[DataRequired(),NumberRange(min=1,max=1000)])
     quantity = IntegerField('Quantity', validators=[DataRequired(),NumberRange(min=1,max=1000)])
     submit = SubmitField('Submit')
+
+class EditMovieForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    img_path = TextAreaField('Image URL')
+    description = TextAreaField('Description')
+    genre = StringField('Genre')
+    rating = FloatField('Rating', validators=[NumberRange(min=1,max=10)])
+    price = FloatField('Price', validators=[NumberRange(min=1,max=1000)])
+    quantity = IntegerField('Quantity', validators=[NumberRange(min=1,max=1000)])
+    submit = SubmitField('Submit')
+
+    def __init__(self, original_movie, *args, **kwargs):
+        super(EditMovieForm, self).__init__(*args, **kwargs)
+        self.original_name = original_movie.name
+
+    def validate_name(self, name):
+        if name.data != self.original_name:
+            movie = Movie.query.filter_by(name=self.name.data).first()
+            if movie is not None:
+                raise ValidationError('Please use a different name.')
