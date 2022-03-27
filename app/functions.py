@@ -1,9 +1,8 @@
-from fpdf import FPDF
 from app.models import User, Movie, Order
 from app import db
 from time import time
 from flask import flash
-
+from fpdf import FPDF
 def rent_movie(user_id, movie_id, qty=1):
     try:
         #get movie details
