@@ -6,6 +6,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import app, db, login
+from fpdf import FPDF
 
 
 followers = db.Table(
@@ -146,5 +147,9 @@ class Order(db.Model):
     
     def __repr__(self):
         return '<Order {} {} {} {}>'.format(self.id, self.user_id, self.movie_id, self.timestamp)
+
+    
+
+    
             
         
