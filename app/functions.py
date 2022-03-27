@@ -1,10 +1,9 @@
-
 from app.models import User, Movie, Order
 from app import db
 from time import time
 from flask import flash
 
-def purchase_movie(user_id, movie_id, qty):
+def rent_movie(user_id, movie_id, qty=1):
     try:
         #get movie details
         user_obj = User.query.filter_by(id=user_id).first() #sure to exist
@@ -22,9 +21,9 @@ def purchase_movie(user_id, movie_id, qty):
                 movie_obj.qty -= qty
                 db.session.add(my_order)
                 db.session.commit()
-                flash('Congratulations. Purchase Successful')
+                flash('Congratulations. Movie Rented Successful')
         else:
             raise ValueError("Movie Not Found!")
 
     except ValueError as e:
-        print(e)
+        flash(e)

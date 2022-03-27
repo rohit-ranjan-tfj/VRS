@@ -7,6 +7,7 @@ from app.forms import LoginForm, RegistrationForm, StaffRegistrationForm, EditPr
     EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm, MovieForm
 from app.models import User, Post, Movie, Order
 from app.email import send_password_reset_email
+from app.functions import *
 
 
 @app.before_request
@@ -20,7 +21,8 @@ def before_request():
 @login_required
 def index_user():
     if str(request.form.get('Rent Movie'))[:10] == 'Rent Movie':
-        flash(('Movie ID ' + str(request.form.get('Rent Movie'))[14:] + ' is rented for 30 days'))
+        rent_movie(current_user.id, int(str(request.form.get('Rent Movie'))[14:]))
+        
     page = request.args.get('page', 1, type=int)
     movies = Movie.query.order_by(Movie.timestamp.desc()).paginate(
         page, app.config['MOVIES_PER_PAGE'], False)
