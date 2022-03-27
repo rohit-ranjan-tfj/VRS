@@ -28,10 +28,11 @@
             </li>
         </ul>
     </nav>
-
+    {% if current_user.is_authenticated %}
+    {% if current_user.user_cat!='user' %}
     <form method="post" action="/">
-
         <input type="submit" class="btn btn-info" value="Add Movie" name="Add Movie">
-
-    </form> 
+    </form>
+    {% endif %} 
+    {% endif %} 
 {% endblock %}

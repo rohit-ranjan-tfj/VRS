@@ -19,6 +19,8 @@ def before_request():
 @app.route('/index_user', methods=['GET', 'POST'])
 @login_required
 def index_user():
+    if str(request.form.get('Rent Movie'))[:10] == 'Rent Movie':
+        flash(('Movie ID ' + str(request.form.get('Rent Movie'))[14:] + ' is rented for 30 days'))
     page = request.args.get('page', 1, type=int)
     movies = Movie.query.order_by(Movie.timestamp.desc()).paginate(
         page, app.config['MOVIES_PER_PAGE'], False)
@@ -50,9 +52,14 @@ def index_manager():
     return render_template('index.html', title='Home')                                                      
 
 
-@app.route('/')
-@app.route('/explore')
+@app.route('/', methods=['GET', 'POST'])
+def landing():
+    return redirect(url_for('explore'))
+
+@app.route('/explore', methods=['GET', 'POST'])
 def explore():
+    if str(request.form.get('Rent Movie'))[:10] == 'Rent Movie':
+        flash(('Movie ID ' + str(request.form.get('Rent Movie'))[14:] + ' is rented for 30 days'))
     page = request.args.get('page', 1, type=int)
     movies = Movie.query.order_by(Movie.timestamp.desc()).paginate(
         page, app.config['MOVIES_PER_PAGE'], False)
@@ -83,7 +90,7 @@ def login():
     return render_template('login.html', title='Sign In', form=form)
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
     logout_user()
     return redirect(url_for('explore'))
@@ -151,7 +158,7 @@ def reset_password(token):
     return render_template('reset_password.html', form=form)
 
 
-@app.route('/user/<username>')
+@app.route('/user/<username>', methods=['GET', 'POST'])
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -167,7 +174,7 @@ def user(username):
                            next_url=next_url, prev_url=prev_url, form=form)
 
 
-@app.route('/movie/<id>')
+@app.route('/movie/<id>', methods=['GET', 'POST'])
 @login_required
 def movie(id):
     movie = Movie.query.filter_by(id=id).first_or_404()
@@ -199,7 +206,7 @@ def edit_profile():
                            form=form)
 
 
-@app.route('/follow/<username>', methods=['POST'])
+@app.route('/follow/<username>', methods=['GET', 'POST'])
 @login_required
 def follow(username):
     form = EmptyForm()
@@ -219,7 +226,7 @@ def follow(username):
         return redirect(url_for('index'+"_" + current_user.user_cat))
 
 
-@app.route('/unfollow/<username>', methods=['POST'])
+@app.route('/unfollow/<username>', methods=['GET', 'POST'])
 @login_required
 def unfollow(username):
     form = EmptyForm()
