@@ -14,6 +14,17 @@
             <p>Rating : {{ movie.rating }}/10.0</p>
             <p>Price : {{ movie.price }}</p>
             <p>Quantity : {{ movie.quantity }}</p>
+            {% if current_user.is_authenticated %}
+            {% if current_user.user_cat=='user' %}
+            <form method="post" >
+                <input type="submit" class="btn btn-info" value="Rent Movie ID {{ movie.id }}" name="Rent Movie">
+            </form>
+            {% endif %} 
+            {% else %}
+            <form method="post" >
+                <input type="submit" class="btn btn-info" value="Rent Movie ID {{ movie.id }}" name="Rent Movie">
+            </form>
+            {% endif %}
         </td>
         </tr>
     </table>
