@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, StaffRegistrationForm, EditProfileForm, \
-    EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm, MovieForm
+    EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm, MovieForm, AddFundsForm
 from app.models import User, Post, Movie, Order
 from app.email import send_password_reset_email
 from app.functions import *
@@ -61,7 +61,7 @@ def landing():
 @app.route('/explore', methods=['GET', 'POST'])
 def explore():
     if str(request.form.get('Rent Movie'))[:10] == 'Rent Movie':
-        flash(('Movie ID ' + str(request.form.get('Rent Movie'))[14:] + ' is rented for 30 days'))
+        rent_movie(current_user.id, int(str(request.form.get('Rent Movie'))[14:]))
     page = request.args.get('page', 1, type=int)
     movies = Movie.query.order_by(Movie.timestamp.desc()).paginate(
         page, app.config['MOVIES_PER_PAGE'], False)
@@ -209,6 +209,21 @@ def edit_profile():
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', title='Edit Profile',
+                           form=form)
+
+
+@app.route('/add_funds', methods=['GET', 'POST'])
+@login_required
+def add_funds():
+    form = AddFundsForm()
+    if form.validate_on_submit():
+        current_user.balance += form.balance.data
+        db.session.commit()
+        flash('Funds successfully added.')
+        return redirect(url_for('user',username=current_user.username))
+    elif request.method == 'GET':
+        form.balance.data = current_user.balance
+    return render_template('add_funds.html', title='Add Funds',
                            form=form)
 
 
