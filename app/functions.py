@@ -4,7 +4,7 @@ from app import db
 from time import time
 from flask import flash
 
-def rent_movie(user_id, movie_id, qty=1):
+def purchase_movie(user_id, movie_id, qty):
     try:
         #get movie details
         user_obj = User.query.filter_by(id=user_id).first() #sure to exist
@@ -22,12 +22,12 @@ def rent_movie(user_id, movie_id, qty=1):
                 movie_obj.qty -= qty
                 db.session.add(my_order)
                 db.session.commit()
-                flash('Congratulations. Movie Rented Successful')
+                flash('Congratulations. Purchase Successful')
         else:
             raise ValueError("Movie Not Found!")
 
     except ValueError as e:
-        flash(e)
+        print(e)
 
 def generate_receipt(movie_id):
     try:
@@ -51,7 +51,7 @@ def generate_receipt(movie_id):
         else:
             raise KeyError("Order Not Found!")
     except KeyError as e:
-        flash(e)
+        print(e)
 
 def view_balance(user_id):
     try:
@@ -61,15 +61,15 @@ def view_balance(user_id):
             if (user_obj.user_cat == 'user'):
                 if not user_obj.balance:
                     user_obj.balance = 0
-                flash('Your balance is Rs. {}'.format(user_obj.balance))
+                print('Your balance is Rs. {}'.format(user_obj.balance))
         
             else:
-                flash('Applicable for users only.')
+                print('Applicable for users only.')
         else:
             raise KeyError("User Not Found!")
 
     except KeyError as e:
-        flash(e)
+        print(e)
 
 def add_balance(user_id, amount):
     try:
@@ -85,17 +85,17 @@ def add_balance(user_id, amount):
                     else:
                         user_obj.balance = amount + user_obj.balance
                 except ValueError as v:
-                    flash(v)
+                    print(v)
                     
-                flash("Amount added successfully. Your new balance is Rs. {}".format(user_obj.balance))
+                print("Amount added successfully. Your new balance is Rs. {}".format(user_obj.balance))
         
             else:
-                flash('Applicable for users only.')
+                print('Applicable for users only.')
         else:
             raise KeyError("User Not Found!")
 
     except KeyError as e:
-        flash(e)
+        print(e)
 
 def returnMovie( order_id):
     try:
@@ -108,12 +108,12 @@ def returnMovie( order_id):
             else:
                 order_obj.status = "YES"
                 db.session.commit()
-                flash("Movie returned successfully.")
+                print("Movie returned successfully.")
         else:
             raise ValueError("Order Not Found!")
 
     except ValueError as e:
-        flash(e)
+        print(e)
 
 def view_orders(user_id):
     try:
@@ -122,22 +122,22 @@ def view_orders(user_id):
         if user_obj is not None:
             if (user_obj.user_cat == 'user'):
                 
-                flash('Your orders are:')
+                print('Your orders are:')
                 for order in Order.query.filter_by(user_id=user_id):
-                    flash(order.id)
-                    flash(order.movie_id)
-                    flash(order.price)
-                    flash(order.timestamp)
-                    flash(order.status)
-                    flash("\n")
+                    print(order.id)
+                    print(order.movie_id)
+                    print(order.price)
+                    print(order.timestamp)
+                    print(order.status)
+                    print("\n")
         
             else:
-                flash('Applicable for users only.')
+                print('Applicable for users only.')
         else:
             raise KeyError("User Not Found!")
 
     except KeyError as e:
-        flash(e)
+        print(e)
 
 def view_deadlines(user_id):
     try:
@@ -146,23 +146,23 @@ def view_deadlines(user_id):
         if user_obj is not None:
             if (user_obj.user_cat == 'user'):
                 
-                flash('Your deadlines are:')
+                print('Your deadlines are:')
                 for order in Order.query.filter_by(user_id=user_id):
                     if order.status == "NO":
-                        flash(order.id)
-                        flash(order.movie_id)
-                        flash(order.price)
-                        flash(order.timestamp)
-                        flash(order.status)
-                        flash("\n")
+                        print(order.id)
+                        print(order.movie_id)
+                        print(order.price)
+                        print(order.timestamp)
+                        print(order.status)
+                        print("\n")
         
             else:
-                flash('Applicable for users only.')
+                print('Applicable for users only.')
         else:
             raise KeyError("User Not Found!")
 
     except KeyError as e:
-        flash(e)
+        print(e)
 
 
 def restock_movies(movie_id, quantity, user_id):
@@ -171,7 +171,7 @@ def restock_movies(movie_id, quantity, user_id):
         if quantity < 0:
             raise ValueError("Quantity cannot be negative.")
     except ValueError as e:
-        flash(e)
+        print(e)
     try:
         movie_obj = Movie.query.filter_by(id=movie_id).first()
         user_obj = Order.query.filter_by(id=user_id).first()
@@ -179,23 +179,23 @@ def restock_movies(movie_id, quantity, user_id):
             if movie_obj is not None:
                 movie_obj.qty += quantity
                 db.session.commit()
-                flash("Movie restocked successfully.")
+                print("Movie restocked successfully.")
             else:
                 raise ValueError("Movie Not Found!")
         else:
             raise ValueError("Only staff can restock movies.")
 
     except ValueError as e:
-        flash(e)
+        print(e)
 
 def search_movies(keyword):
     for movie in Movie.query.order_by(Movie.name):
         if keyword in movie.name or keyword in movie.genre or keyword in movie.description:
-            flash(movie.id)
-            flash(movie.name)
-            flash(movie.genre)
-            flash(movie.price)
-            flash(movie.qty)
-            flash("\n")
-    flash("Search complete.")
+            print(movie.id)
+            print(movie.name)
+            print(movie.genre)
+            print(movie.price)
+            print(movie.qty)
+            print("\n")
+    print("Search complete.")
     
