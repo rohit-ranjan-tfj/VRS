@@ -19,20 +19,36 @@ def before_request():
 @app.route('/index_user', methods=['GET', 'POST'])
 @login_required
 def index_user():
-    if str(request.form.get('Rent Movie'))[:10] == 'Rent Movie':
-        rent_movie(current_user.id, int(str(request.form.get('Rent Movie'))[14:]))
-        
-    page = request.args.get('page', 1, type=int)
-    movies = Movie.query.order_by(Movie.timestamp.desc()).paginate(
-        page, app.config['MOVIES_PER_PAGE'], False)
-    next_url = url_for('explore', page=movies.next_num) \
-        if movies.has_next else None
-    prev_url = url_for('explore', page=movies.prev_num) \
-        if movies.has_prev else None
-
-    return render_template('index.html', title='Home', form=None,
-                           movies=movies.items, next_url=next_url,
-                           prev_url=prev_url)
+    if request.form.get('View Orders') == 'View Orders':
+        orders = view_orders(current_user.id)
+        order_list=[]
+        for order in orders:
+            movie = Movie.query.filter_by(id = order.movie_id).first()
+            order_list.append((order,movie))
+        if len(order_list)>0:
+            return render_template('index.html', order_list=order_list)
+        else:
+            flash('No orders found.')
+            return render_template('index.html', title='Home')
+    
+    if request.form.get('View Deadlines') == 'View Deadlines':
+        orders = view_orders(current_user.id)
+        order_list=[]
+        for order in orders:
+            movie = Movie.query.filter_by(id = order.movie_id).first()
+            if order.status == 'NO':
+                order_list.append((order,movie))
+        if len(order_list)>0:
+            return render_template('index.html', order_list=order_list)
+        else:
+            flash('No approaching deadlines found.')
+            return render_template('index.html', title='Home')
+    
+    if str(request.form.get("Return Order"))[:12] == "Return Order":
+        print('here')
+        return_movie(int(str(request.form.get('Return Order'))[16:]))
+    
+    return render_template('index.html', title='Home')
 
 
 @app.route('/index_staff', methods=['GET', 'POST'])
@@ -79,9 +95,6 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         cat = form.user_cat.data
-        if(cat=='manager'):
-            print(form.username.data)
-            print(form.password.data)
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data) or user.user_cat != cat:
             flash('Invalid credentials')
@@ -309,7 +322,7 @@ def unfollow(username):
 @app.route('/add_movie', methods=['GET', 'POST'])
 @login_required
 def add_movie():
-    if request.form.get('Back to Dashboard') == 'Back to Dashboard':
+    if request.form.get('Back to Dashboard') == 'Dashboard':
         return redirect(url_for('index'+"_" + current_user.user_cat))
     form = MovieForm()
     if form.validate_on_submit():

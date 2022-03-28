@@ -1,3 +1,4 @@
+from datetime import datetime
 from app.models import User, Movie, Order
 from app import db
 from flask import flash
@@ -53,51 +54,7 @@ def generate_receipt(movie_id):
     except KeyError as e:
         flash(e)
 
-def view_balance(user_id):
-    try:
-        user_obj = Order.query.filter_by(id=user_id).first()
-
-        if user_obj is not None:
-            if (user_obj.user_cat == 'user'):
-                if not user_obj.balance:
-                    user_obj.balance = 0
-                flash('Your balance is Rs. {}'.format(user_obj.balance))
-        
-            else:
-                flash('Applicable for users only.')
-        else:
-            raise KeyError("User Not Found!")
-
-    except KeyError as e:
-        flash(e)
-
-def add_balance(user_id, amount):
-    try:
-        user_obj = Order.query.filter_by(id=user_id).first()
-
-        if user_obj is not None:
-            if (user_obj.user_cat == 'user'):
-                if not user_obj.balance:
-                    user_obj.balance = 0
-                try:
-                    if amount<0:
-                        raise ValueError("Amount cannot be negative.")
-                    else:
-                        user_obj.balance = amount + user_obj.balance
-                except ValueError as v:
-                    flash(v)
-                    
-                flash("Amount added successfully. Your new balance is Rs. {}".format(user_obj.balance))
-        
-            else:
-                flash('Applicable for users only.')
-        else:
-            raise KeyError("User Not Found!")
-
-    except KeyError as e:
-        flash(e)
-
-def returnMovie( order_id):
+def return_movie( order_id):
     try:
         
         order_obj = Order.query.filter_by(id=order_id).first()
@@ -107,6 +64,7 @@ def returnMovie( order_id):
                 raise ValueError("Movie already returned.")
             else:
                 order_obj.status = "YES"
+                order_obj.returned = datetime.utcnow()
                 db.session.commit()
                 flash("Movie returned successfully.")
         else:
@@ -117,20 +75,11 @@ def returnMovie( order_id):
 
 def view_orders(user_id):
     try:
-        user_obj = Order.query.filter_by(id=user_id).first()
+        user_obj = User.query.filter_by(id=user_id).first()
 
         if user_obj is not None:
             if (user_obj.user_cat == 'user'):
-                
-                flash('Your orders are:')
-                for order in Order.query.filter_by(user_id=user_id):
-                    flash(order.id)
-                    flash(order.movie_id)
-                    flash(order.price)
-                    flash(order.timestamp)
-                    flash(order.status)
-                    flash("\n")
-        
+                return(Order.query.filter_by(user_id=user_id))
             else:
                 flash('Applicable for users only.')
         else:
@@ -138,31 +87,7 @@ def view_orders(user_id):
 
     except KeyError as e:
         flash(e)
-
-def view_deadlines(user_id):
-    try:
-        user_obj = Order.query.filter_by(id=user_id).first()
-
-        if user_obj is not None:
-            if (user_obj.user_cat == 'user'):
-                
-                flash('Your deadlines are:')
-                for order in Order.query.filter_by(user_id=user_id):
-                    if order.status == "NO":
-                        flash(order.id)
-                        flash(order.movie_id)
-                        flash(order.price)
-                        flash(order.timestamp)
-                        flash(order.status)
-                        flash("\n")
-        
-            else:
-                flash('Applicable for users only.')
-        else:
-            raise KeyError("User Not Found!")
-
-    except KeyError as e:
-        flash(e)
+    return None
 
 
 def restock_movies(movie_id, quantity, user_id):

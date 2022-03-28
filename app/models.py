@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from hashlib import md5
 from re import S
 from time import time
@@ -7,6 +7,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import app, db, login
 from fpdf import FPDF
+from sqlalchemy.sql import func
+from sqlalchemy.sql.expression import bindparam
+from sqlalchemy import Interval
 
 
 followers = db.Table(
@@ -141,6 +144,8 @@ class Order(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    deadline = db.Column(db.DateTime, index=True, default=(datetime.utcnow() + timedelta(days=30)))
+    returned = db.Column(db.DateTime, default=None)
     status = db.Column(db.String(40))
     price = db.Column(db.Float)
     quantity = db.Column(db.Integer)

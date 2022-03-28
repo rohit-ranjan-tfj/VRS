@@ -19,12 +19,13 @@
             <form method="post" >
                 <input type="submit" class="btn btn-info" value="Rent Movie ID {{ movie.id }}" name="Rent Movie">
             </form>
-            {% endif %} 
+            {% else %} 
             <form method="post" >
                 <a href="{{ url_for('edit_movie',id=movie.id) }}">
                 <input type="button" class="btn btn-info" value="Edit Movie Details" name="Edit Movie Details">
                 </a>
             </form>
+            {% endif %}
             {% else %}
             <form method="post" >
                 <input type="submit" class="btn btn-info" value="Rent Movie ID {{ movie.id }}" name="Rent Movie">

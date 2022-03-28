@@ -14,25 +14,20 @@
     {% for movie in movies %}
         {% include '_movie.html' %}
     {% endfor %}
-    <nav aria-label="...">
-        <ul class="pager">
-            <li class="previous{% if not prev_url %} disabled{% endif %}">
-                <a href="{{ prev_url or '#' }}">
-                    <span aria-hidden="true">&larr;</span> Newer Movies
-                </a>
-            </li>
-            <li class="next{% if not next_url %} disabled{% endif %}">
-                <a href="{{ next_url or '#' }}">
-                    Older Movies <span aria-hidden="true">&rarr;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
     {% if current_user.is_authenticated %}
     {% if current_user.user_cat!='user' %}
     <form method="post" action="/">
         <input type="submit" class="btn btn-info" value="Add Movie" name="Add Movie">
     </form>
+    {% else %}
+    <form method="post" >
+        {% for order,movie in order_list %}
+            {% include '_order.html' %}
+        {% endfor %}
+        <input type="submit" class="btn btn-info" value="View Orders" name="View Orders">
+        <input type="submit" class="btn btn-info" value="View Deadlines" name="View Deadlines">
+    </form>
+    {% endif %}
     {% endif %} 
-    {% endif %} 
+    
 {% endblock %}
