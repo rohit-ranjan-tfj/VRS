@@ -5,7 +5,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import *
-from app.models import User, Post, Movie, Order
+from app.models import User, Movie, Order
 from app.email import send_password_reset_email
 from app.functions import *
 from flask import g
@@ -247,15 +247,7 @@ def reset_password(token):
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
-    posts = user.posts.order_by(Post.timestamp.desc()).paginate(
-        page, app.config['POSTS_PER_PAGE'], False)
-    next_url = url_for('user', username=user.username, page=posts.next_num) \
-        if posts.has_next else None
-    prev_url = url_for('user', username=user.username, page=posts.prev_num) \
-        if posts.has_prev else None
-    form = EmptyForm()
-    return render_template('user.html', user=user, posts=posts.items,
-                           next_url=next_url, prev_url=prev_url, form=form)
+    return render_template('user.html', user=user)
 
 
 @app.route('/movie/<id>', methods=['GET', 'POST'])
@@ -365,45 +357,6 @@ def add_stock():
                            form=form)
 
 
-@app.route('/follow/<username>', methods=['GET', 'POST'])
-@login_required
-def follow(username):
-    form = EmptyForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=username).first()
-        if user is None:
-            flash('User {} not found.'.format(username))
-            return redirect(url_for('index'+"_" + current_user.user_cat))
-        if user == current_user:
-            flash('You cannot follow yourself!')
-            return redirect(url_for('user', username=username))
-        current_user.follow(user)
-        db.session.commit()
-        flash('You are following {}!'.format(username))
-        return redirect(url_for('user', username=username))
-    else:
-        return redirect(url_for('index'+"_" + current_user.user_cat))
-
-
-@app.route('/unfollow/<username>', methods=['GET', 'POST'])
-@login_required
-def unfollow(username):
-    form = EmptyForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=username).first()
-        if user is None:
-            flash('User {} not found.'.format(username))
-            return redirect(url_for('index'+"_" + current_user.user_cat))
-        if user == current_user:
-            flash('You cannot unfollow yourself!')
-            return redirect(url_for('user', username=username))
-        current_user.unfollow(user)
-        db.session.commit()
-        flash('You are not following {}.'.format(username))
-        return redirect(url_for('user', username=username))
-    else:
-        return redirect(url_for('index'+"_" + current_user.user_cat))
-
 @app.route('/add_movie', methods=['GET', 'POST'])
 @login_required
 def add_movie():
@@ -417,6 +370,7 @@ def add_movie():
         flash('The movie is now live on the store!')
         return redirect(url_for('add_movie'))
     return render_template('add_movie.html', title='Home', form=form)
+
 
 @app.route('/search')
 def search():

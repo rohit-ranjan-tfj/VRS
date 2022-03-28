@@ -15,7 +15,6 @@ class Config(object):
     ADMINS = ['admin@example.com']
     ADMIN_PASSWORD = 'admin'
     SYS_PASSWORD = 123456
-    POSTS_PER_PAGE = 25
     MOVIES_PER_PAGE = 25
     USERS_PER_PAGE = 25
     ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')

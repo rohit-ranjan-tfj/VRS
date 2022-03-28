@@ -8,7 +8,6 @@
                 <p>Last seen on: {{ moment(user.last_seen).format('LLL') }}</p>
                 {% endif %}
                 <p>Balance : {{ user.balance }}</p>
-                <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
                 {% if user.user_cat=='user' %}
                 <form method="post" >
                     <input type="submit" class="btn btn-info" value="View Orders of User ID {{ user.id }}" name="View Orders">

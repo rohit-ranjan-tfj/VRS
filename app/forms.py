@@ -4,7 +4,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, \
     Length,NumberRange
 from app import app
-from app.models import User,Post, Movie
+from app.models import User, Movie
 from flask import request
 
 class SearchForm(FlaskForm):
@@ -107,10 +107,6 @@ class AddStockForm(FlaskForm):
 
 
 class EmptyForm(FlaskForm):
-    submit = SubmitField('Submit')
-
-class PostForm(FlaskForm):
-    post = TextAreaField('Say something', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 class MovieForm(FlaskForm):

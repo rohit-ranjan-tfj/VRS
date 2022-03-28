@@ -89,15 +89,4 @@ def view_orders(user_id):
     except KeyError as e:
         flash(e)
     return None
-
-def search_movies(keyword):
-    for movie in Movie.query.order_by(Movie.name):
-        if keyword in movie.name or keyword in movie.genre or keyword in movie.description:
-            flash(movie.id)
-            flash(movie.name)
-            flash(movie.genre)
-            flash(movie.price)
-            flash(movie.qty)
-            flash("\n")
-    flash("Search complete.")
     
