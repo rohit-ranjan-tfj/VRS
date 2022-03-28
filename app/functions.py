@@ -150,66 +150,6 @@ def view_orders(user_id):
 
     except KeyError as e:
         flash(e)
-
-def view_deadlines(user_id):
-    try:
-        user_obj = Order.query.filter_by(id=user_id).first()
-
-        if user_obj is not None:
-            if (user_obj.user_cat == 'user'):
-                
-                flash('Your deadlines are:')
-                for order in Order.query.filter_by(user_id=user_id):
-                    if order.status == "NO":
-                        flash(order.id)
-                        flash(order.movie_id)
-                        flash(order.price)
-                        flash(order.timestamp)
-                        flash(order.status)
-                        flash("\n")
-        
-            else:
-                flash('Applicable for users only.')
-        else:
-            raise KeyError("User Not Found!")
-
-    except KeyError as e:
-        flash(e)
-
-
-def restock_movies(movie_id, quantity, user_id):
-    try:
-
-        if quantity < 0:
-            raise ValueError("Quantity cannot be negative.")
-    except ValueError as e:
-        flash(e)
-    try:
-        movie_obj = Movie.query.filter_by(id=movie_id).first()
-        user_obj = Order.query.filter_by(id=user_id).first()
-        if user_obj.user_cat == 'staff':
-            if movie_obj is not None:
-                movie_obj.qty += quantity
-                db.session.commit()
-                flash("Movie restocked successfully.")
-            else:
-                raise ValueError("Movie Not Found!")
-        else:
-            raise ValueError("Only staff can restock movies.")
-
-    except ValueError as e:
-        flash(e)
-
-def search_movies(keyword):
-    for movie in Movie.query.order_by(Movie.name):
-        if keyword in movie.name or keyword in movie.genre or keyword in movie.description:
-            flash(movie.id)
-            flash(movie.name)
-            flash(movie.genre)
-            flash(movie.price)
-            flash(movie.qty)
-            flash("\n")
-    flash("Search complete.")
     
 def audit(user_id):
     auditpdf = FPDF()

@@ -13,7 +13,6 @@
                 {% if user == current_user %}
                 <p>Balance : {{ user.balance }}</p>
                 {% endif %}
-                <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
                 {% if user == current_user %}
                 <form method="post" >
                     <a href="{{ url_for('edit_profile') }}">
@@ -41,7 +40,4 @@
             </td>
         </tr>
     </table>
-    {% for post in posts %}
-        {% include '_post.html' %}
-    {% endfor %}
 {% endblock %}
