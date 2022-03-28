@@ -1,5 +1,6 @@
 todo.txt
 Receipts/*.pdf
+Audits/*.pdf
 *.py[cod]
 
 # C extensions

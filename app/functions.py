@@ -1,9 +1,8 @@
-from encodings import utf_8
+from datetime import datetime
 from app.models import User, Movie, Order
 from app import db
 from flask import flash
 from fpdf import FPDF
-from urllib.request import urlopen
 
 def rent_movie(user_id, movie_id, qty=1):
     try:
@@ -24,8 +23,7 @@ def rent_movie(user_id, movie_id, qty=1):
                 user_obj.balance -= movie_obj.price*qty
                 db.session.add(my_order)
                 db.session.commit()
-                flash('Congratulations. Movie Rented Successfully')
-                generate_receipt(my_order.id)
+                flash('Congratulations. Movie Rented Successful')
         else:
             raise ValueError("Movie Not Found!")
 
@@ -58,54 +56,11 @@ def generate_receipt(order_id):
             else:
                 receipt.cell(200, 10, txt=f"Status: Not Returned", ln=1, align="C")
             receipt.cell(200, 10, txt=f"Total Price: {order_obj.price}", ln=1, align="C")
-            receipt.output("receipt" + str(order_obj.id)+".pdf")
+            receipt.output("Receipts/receipt" + str(order_obj.id)+".pdf")
+            flash("Receipt Generated Successfully and downloaded.")
         
         else:
             raise KeyError("Order Not Found!")
-    except KeyError as e:
-        flash(e)
-
-def view_balance(user_id):
-    try:
-        user_obj = Order.query.filter_by(id=user_id).first()
-
-        if user_obj is not None:
-            if (user_obj.user_cat == 'user'):
-                if not user_obj.balance:
-                    user_obj.balance = 0
-                flash('Your balance is Rs. {}'.format(user_obj.balance))
-        
-            else:
-                flash('Applicable for users only.')
-        else:
-            raise KeyError("User Not Found!")
-
-    except KeyError as e:
-        flash(e)
-
-def add_balance(user_id, amount):
-    try:
-        user_obj = Order.query.filter_by(id=user_id).first()
-
-        if user_obj is not None:
-            if (user_obj.user_cat == 'user'):
-                if not user_obj.balance:
-                    user_obj.balance = 0
-                try:
-                    if amount<0:
-                        raise ValueError("Amount cannot be negative.")
-                    else:
-                        user_obj.balance = amount + user_obj.balance
-                except ValueError as v:
-                    flash(v)
-                    
-                flash("Amount added successfully. Your new balance is Rs. {}".format(user_obj.balance))
-        
-            else:
-                flash('Applicable for users only.')
-        else:
-            raise KeyError("User Not Found!")
-
     except KeyError as e:
         flash(e)
 
@@ -119,6 +74,7 @@ def return_movie( order_id):
                 raise ValueError("Movie already returned.")
             else:
                 order_obj.status = "YES"
+                order_obj.returned = datetime.utcnow()
                 db.session.commit()
                 flash("Movie returned successfully.")
         else:
@@ -129,20 +85,11 @@ def return_movie( order_id):
 
 def view_orders(user_id):
     try:
-        user_obj = Order.query.filter_by(id=user_id).first()
+        user_obj = User.query.filter_by(id=user_id).first()
 
         if user_obj is not None:
             if (user_obj.user_cat == 'user'):
-                
-                flash('Your orders are:')
-                for order in Order.query.filter_by(user_id=user_id):
-                    flash(order.id)
-                    flash(order.movie_id)
-                    flash(order.price)
-                    flash(order.timestamp)
-                    flash(order.status)
-                    flash("\n")
-        
+                return(Order.query.filter_by(user_id=user_id))
             else:
                 flash('Applicable for users only.')
         else:
@@ -150,31 +97,36 @@ def view_orders(user_id):
 
     except KeyError as e:
         flash(e)
+    return None
+
+def search_movies(keyword):
+    for movie in Movie.query.order_by(Movie.name):
+        if keyword in movie.name or keyword in movie.genre or keyword in movie.description:
+            flash(movie.id)
+            flash(movie.name)
+            flash(movie.genre)
+            flash(movie.price)
+            flash(movie.qty)
+            flash("\n")
+    flash("Search complete.")
     
-def audit(user_id):
+    
+def audit():
     auditpdf = FPDF()
     try:
-        user_obj = Order.query.filter_by(id=user_id).first()
+        auditpdf.add_page()
+        auditpdf.set_font('Arial', 'B', 16)
+        auditpdf.cell(200, 10, 'Audit', 0, 1, 'C')
+        auditpdf.set_font('Arial', '', 12)
 
-        if user_obj is not None:
-            if (user_obj.user_cat == 'staff'):
-                auditpdf.add_page()
-                auditpdf.set_font('Arial', 'B', 16)
-                auditpdf.cell(200, 10, 'Audit', 0, 1, 'C')
-                auditpdf.set_font('Arial', '', 12)
-
-              
-                total = 0
-                for order in Order.query.filter_by(user_cat='user'):
-                    auditpdf.cell(200, 10, 'Order ID: ' + str(order.id) + ', Price: '+ str(order.price), 0, 1, 'L')
-                    total += order.price
-                auditpdf.cell(200, 10, 'Total Money Collected:' + str(total), 0, 0, 'C')
-                
-                auditpdf.output("audit.pdf")
-            else:
-                flash('Applicable for staff only.')
-        else:
-            raise KeyError("Staff Not Found!")
+        total = 0
+        for order in Order.query.all():
+            auditpdf.cell(200, 10, 'Order ID: ' + str(order.id) + ', Price: '+ str(order.price), 0, 1, 'L')
+            total += order.price
+        auditpdf.cell(200, 10, 'Total Revenue: ' + str(total), 0, 0, 'C')
+        
+        auditpdf.output("Audits/audit.pdf")
+        flash("Audit Generated Successfully and downloaded.")
 
     except KeyError as e:
         flash(e)

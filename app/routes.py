@@ -132,6 +132,9 @@ def index_manager():
     
     if str(request.form.get("Generate Receipt"))[:16] == "Generate Receipt":
         generate_receipt(int(str(request.form.get('Generate Receipt'))[30:]))
+    
+    if request.form.get("Audit") == "Audit":
+        audit()
 
     return render_template('index.html', title='Home')
                                                      
