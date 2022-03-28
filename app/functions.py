@@ -109,7 +109,7 @@ def add_balance(user_id, amount):
     except KeyError as e:
         flash(e)
 
-def returnMovie( order_id):
+def return_movie( order_id):
     try:
         
         order_obj = Order.query.filter_by(id=order_id).first()
