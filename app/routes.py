@@ -1,4 +1,5 @@
 from datetime import datetime
+from locale import getlocale
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
@@ -7,6 +8,7 @@ from app.forms import *
 from app.models import User, Post, Movie, Order
 from app.email import send_password_reset_email
 from app.functions import *
+from flask import g
 
 
 @app.before_request
@@ -14,6 +16,8 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+        g.search_form = SearchForm()
+    g.locale = str(getlocale())
 
 
 @app.route('/index_user', methods=['GET', 'POST'])
@@ -412,3 +416,18 @@ def add_movie():
         flash('The movie is now live on the store!')
         return redirect(url_for('add_movie'))
     return render_template('add_movie.html', title='Home', form=form)
+
+@app.route('/search')
+@login_required
+def search():
+    if not g.search_form.validate():
+        return redirect(url_for('explore'))
+    page = request.args.get('page', 1, type=int)
+    movies, total = Movie.search(g.search_form.q.data, page,
+                               app.config['MOVIES_PER_PAGE'])
+    next_url = url_for('search', q=g.search_form.q.data, page=page + 1) \
+        if total > page * app.config['MOVIES_PER_PAGE'] else None
+    prev_url = url_for('search', q=g.search_form.q.data, page=page - 1) \
+        if page > 1 else None
+    return render_template('search.html', title='Search', movies=movies,
+                           next_url=next_url, prev_url=prev_url)

@@ -5,6 +5,17 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, \
     Length,NumberRange
 from app import app
 from app.models import User,Post, Movie
+from flask import request
+
+class SearchForm(FlaskForm):
+    q = StringField('Search', validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        if 'formdata' not in kwargs:
+            kwargs['formdata'] = request.args
+        if 'meta' not in kwargs:
+            kwargs['meta'] = {'csrf': False}
+        super(SearchForm, self).__init__(*args, **kwargs)
 
 
 class LoginForm(FlaskForm):
