@@ -1,0 +1,28 @@
+    <table class="table table-hover">
+        <tr>
+            <td width="300px"><img width="300" height="400" src="{{ movie.img_path }}" alt="https://previews.123rf.com/images/pavelstasevich/pavelstasevich1811/pavelstasevich181101028/112815904-.jpg"></td>
+            <td>
+                
+                <h1>{{ movie.name }}</h1>
+                {% if order.timestamp %}
+                <p>Ordered {{ moment(order.timestamp).fromNow() }}</p>
+                {% endif %}
+                {% if order.returned %}
+                <p>Returned {{ moment(order.returned).fromNow() }}</p>
+                {% else %}
+                {% if order.deadline %}
+                <p>Deadline :  {{ order.deadline }}</p>
+                {% endif %}
+                {% endif %}
+                <p>Price : {{ order.price }}</p>
+                <p>Quantity : {{ order.quantity }}</p>
+                <p>Status : {{ order.status }}</p>
+                {% if order.status == 'NO' %}
+                <form method="post" >
+                    <input type="submit" class="btn btn-info" value="Return Order ID {{ order.id }}" name="Return Order">
+                    <input type="submit" class="btn btn-info" value="Generate Receipt for Order ID {{ order.id }}" name="Generate Receipt">
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+    </table>

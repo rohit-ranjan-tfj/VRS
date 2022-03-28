@@ -1,6 +1,7 @@
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
+from elasticsearch import Elasticsearch
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -12,6 +13,8 @@ from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+        if app.config['ELASTICSEARCH_URL'] else None
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)

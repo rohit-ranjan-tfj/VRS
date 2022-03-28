@@ -5,6 +5,17 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, \
     Length,NumberRange
 from app import app
 from app.models import User,Post, Movie
+from flask import request
+
+class SearchForm(FlaskForm):
+    q = StringField('Search', validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        if 'formdata' not in kwargs:
+            kwargs['formdata'] = request.args
+        if 'meta' not in kwargs:
+            kwargs['meta'] = {'csrf': False}
+        super(SearchForm, self).__init__(*args, **kwargs)
 
 
 class LoginForm(FlaskForm):
@@ -87,6 +98,11 @@ class EditProfileForm(FlaskForm):
 
 class AddFundsForm(FlaskForm):
     balance = FloatField('Funds to add', validators=[DataRequired(),NumberRange(min=0)])
+    submit = SubmitField('Submit')
+
+class AddStockForm(FlaskForm):
+    id = IntegerField('Movie ID', validators=[DataRequired()])
+    stock = IntegerField('Stock to add', validators=[DataRequired(),NumberRange(min=0)])
     submit = SubmitField('Submit')
 
 

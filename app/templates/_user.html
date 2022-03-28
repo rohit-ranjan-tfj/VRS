@@ -1,0 +1,26 @@
+    <table class="table table-hover">
+        <tr>
+            <td width="256px"><img src="{{ user.avatar(256) }}"></td>
+            <td>
+                <h1>User: {{ user.username }}</h1>
+                {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+                {% if user.last_seen %}
+                <p>Last seen on: {{ moment(user.last_seen).format('LLL') }}</p>
+                {% endif %}
+                <p>Balance : {{ user.balance }}</p>
+                <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
+                {% if user.user_cat=='user' %}
+                <form method="post" >
+                    <input type="submit" class="btn btn-info" value="View Orders of User ID {{ user.id }}" name="View Orders">
+                    <input type="submit" class="btn btn-info" value="View Deadlines of User ID {{ user.id }}" name="View Deadlines">
+                    <input type="submit" class="btn btn-info" value="Delete User ID {{ user.id }}" name="Delete User">
+                </form>
+                {% endif %}
+                {% if user.user_cat=='staff' %}
+                <form method="post" >
+                    <input type="submit" class="btn btn-info" value="Delete User ID {{ user.id }}" name="Delete User">
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
