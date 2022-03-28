@@ -17,3 +17,4 @@ class Config(object):
     SYS_PASSWORD = 123456
     POSTS_PER_PAGE = 25
     MOVIES_PER_PAGE = 25
+    USERS_PER_PAGE = 25

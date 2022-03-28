@@ -58,7 +58,6 @@ def index_user():
 def index_staff():
     if request.form.get('Add Movie') == 'Add Movie':
         return redirect(url_for('add_movie'))
-
     return render_template('index.html', title='Home')
 
 
@@ -67,9 +66,70 @@ def index_staff():
 def index_manager():
     if request.form.get('Add Movie') == 'Add Movie':
         return redirect(url_for('add_movie'))
+    if request.form.get('View Users') == 'View Users':
+        page = request.args.get('page', 1, type=int)
+        users = User.query.filter_by(user_cat='user').order_by(User.id.desc()).paginate(
+            page, app.config['USERS_PER_PAGE'], False)
+        next_url = url_for('explore', page=users.next_num) \
+            if users.has_next else None
+        prev_url = url_for('explore', page=users.prev_num) \
+            if users.has_prev else None
+        return render_template('index.html', title='Home', users=users.items,
+                            next_url=next_url, prev_url=prev_url)
 
-    return render_template('index.html', title='Home')                                                      
+    if request.form.get('View Staff') == 'View Staff':
+        page = request.args.get('page', 1, type=int)
+        users = User.query.filter_by(user_cat='staff').order_by(User.id.desc()).paginate(
+            page, app.config['USERS_PER_PAGE'], False)
+        next_url = url_for('explore', page=users.next_num) \
+            if users.has_next else None
+        prev_url = url_for('explore', page=users.prev_num) \
+            if users.has_prev else None
+        return render_template('index.html', title='Home', users=users.items,
+                            next_url=next_url, prev_url=prev_url)
 
+    if str(request.form.get('View Orders'))[:11] == 'View Orders':
+        orders = view_orders(int(str(request.form.get('View Orders'))[23:]))
+        order_list=[]
+        for order in orders:
+            movie = Movie.query.filter_by(id = order.movie_id).first()
+            order_list.append((order,movie))
+        if len(order_list)>0:
+            return render_template('index.html', order_list=order_list)
+        else:
+            flash('No orders found.')
+            return render_template('index.html', title='Home')
+
+    if str(request.form.get('View Deadlines'))[:14] == 'View Deadlines':
+        orders = view_orders(int(str(request.form.get('View Deadlines'))[26:]))
+        order_list=[]
+        for order in orders:
+            movie = Movie.query.filter_by(id = order.movie_id).first()
+            if order.status == 'NO':
+                order_list.append((order,movie))
+        if len(order_list)>0:
+            return render_template('index.html', order_list=order_list)
+        else:
+            flash('No approaching deadlines found.')
+            return render_template('index.html', title='Home')
+
+    if str(request.form.get('Delete User'))[:11] == 'Delete User':
+        tbd_user = User.query.filter_by(id = int(str(request.form.get('Delete User'))[15:])).first()
+        if tbd_user is not None:
+            db.session.delete(tbd_user)
+            db.session.commit()
+            flash('User deleted.')
+        else:
+            flash('User not found.')
+    
+    if str(request.form.get("Return Order"))[:12] == "Return Order":
+        return_movie(int(str(request.form.get('Return Order'))[16:]))
+    
+    if str(request.form.get("Generate Receipt"))[:16] == "Generate Receipt":
+        generate_receipt(int(str(request.form.get('Generate Receipt'))[30:]))
+
+    return render_template('index.html', title='Home')
+                                                     
 
 @app.route('/', methods=['GET', 'POST'])
 def landing():
