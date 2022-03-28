@@ -16,7 +16,8 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
-        g.search_form = SearchForm()
+
+    g.search_form = SearchForm()
     g.locale = str(getlocale())
 
 
@@ -418,7 +419,6 @@ def add_movie():
     return render_template('add_movie.html', title='Home', form=form)
 
 @app.route('/search')
-@login_required
 def search():
     if not g.search_form.validate():
         return redirect(url_for('explore'))
