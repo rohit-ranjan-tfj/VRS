@@ -195,7 +195,7 @@ def user(username):
 def movie(id):
     if str(request.form.get('Rent Movie'))[:10] == 'Rent Movie':
         if(current_user.is_authenticated):
-            flash(('Movie ID ' + str(request.form.get('Rent Movie'))[14:] + ' is rented for 30 days'))
+            rent_movie(current_user.id, int(str(request.form.get('Rent Movie'))[14:]))
         else:
             flash('Please login to rent a movie')
     movie = Movie.query.filter_by(id=id).first_or_404()
@@ -277,6 +277,24 @@ def add_funds():
     elif request.method == 'GET':
         form.balance.data = current_user.balance
     return render_template('add_funds.html', title='Add Funds',
+                           form=form)
+
+
+@app.route('/add_stock', methods=['GET', 'POST'])
+@login_required
+def add_stock():
+    form = AddStockForm()
+    if form.validate_on_submit():
+        movie = Movie.query.filter_by(id=form.id.data).first_or_404()
+        if movie is None:
+            flash('Movie not found')
+            return redirect(url_for('add_stock'))
+        movie.quantity += form.stock.data
+        db.session.commit()
+        flash('Stock successfully added.')
+        return redirect(url_for('movie',id=form.id.data))
+
+    return render_template('add_funds.html', title='Add Stock of Movie',
                            form=form)
 
 

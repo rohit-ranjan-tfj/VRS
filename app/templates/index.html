@@ -18,6 +18,9 @@
     {% if current_user.user_cat!='user' %}
     <form method="post" action="/">
         <input type="submit" class="btn btn-info" value="Add Movie" name="Add Movie">
+        <a href="{{ url_for('add_stock') }}">
+        <input type="button" class="btn btn-info" value="Add Stock" name="Add Stock">
+        </a>
     </form>
     {% else %}
     <form method="post" >

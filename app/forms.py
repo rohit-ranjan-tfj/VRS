@@ -89,6 +89,11 @@ class AddFundsForm(FlaskForm):
     balance = FloatField('Funds to add', validators=[DataRequired(),NumberRange(min=0)])
     submit = SubmitField('Submit')
 
+class AddStockForm(FlaskForm):
+    id = IntegerField('Movie ID', validators=[DataRequired()])
+    stock = IntegerField('Stock to add', validators=[DataRequired(),NumberRange(min=0)])
+    submit = SubmitField('Submit')
+
 
 class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
