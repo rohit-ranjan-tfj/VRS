@@ -18,3 +18,4 @@ class Config(object):
     POSTS_PER_PAGE = 25
     MOVIES_PER_PAGE = 25
     USERS_PER_PAGE = 25
+    ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
