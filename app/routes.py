@@ -45,8 +45,10 @@ def index_user():
             return render_template('index.html', title='Home')
     
     if str(request.form.get("Return Order"))[:12] == "Return Order":
-        print('here')
         return_movie(int(str(request.form.get('Return Order'))[16:]))
+
+    if str(request.form.get("Generate Receipt"))[:16] == "Generate Receipt":
+        generate_receipt(int(str(request.form.get('Generate Receipt'))[30:]))
     
     return render_template('index.html', title='Home')
 

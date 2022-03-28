@@ -30,9 +30,9 @@ def rent_movie(user_id, movie_id, qty=1):
     except ValueError as e:
         flash(e)
 
-def generate_receipt(movie_id):
+def generate_receipt(order_id):
     try:
-        order_obj = Order.query.filter_by(id=movie_id).first()
+        order_obj = Order.query.filter_by(id=order_id).first()
 
         if order_obj is not None:
             receipt = FPDF()
@@ -47,7 +47,8 @@ def generate_receipt(movie_id):
             receipt.cell(200, 10, txt=f" Date: {order_obj.timestamp}", ln=1, align="C")
             #receipt.cell(200, 10, txt=f"End Date: {order_obj.endDate}", ln=1, align="C")
             receipt.cell(200, 10, txt=f"Order Status: {order_obj.status}", ln=1, align="C")
-            receipt.output("receipt" + str(order_obj.id)+".pdf")
+            receipt.output("Receipts/receipt" + str(order_obj.id)+".pdf")
+            flash("Receipt Generated Successfully and downloaded.")
         
         else:
             raise KeyError("Order Not Found!")
@@ -88,30 +89,6 @@ def view_orders(user_id):
     except KeyError as e:
         flash(e)
     return None
-
-
-def restock_movies(movie_id, quantity, user_id):
-    try:
-
-        if quantity < 0:
-            raise ValueError("Quantity cannot be negative.")
-    except ValueError as e:
-        flash(e)
-    try:
-        movie_obj = Movie.query.filter_by(id=movie_id).first()
-        user_obj = Order.query.filter_by(id=user_id).first()
-        if user_obj.user_cat == 'staff':
-            if movie_obj is not None:
-                movie_obj.qty += quantity
-                db.session.commit()
-                flash("Movie restocked successfully.")
-            else:
-                raise ValueError("Movie Not Found!")
-        else:
-            raise ValueError("Only staff can restock movies.")
-
-    except ValueError as e:
-        flash(e)
 
 def search_movies(keyword):
     for movie in Movie.query.order_by(Movie.name):

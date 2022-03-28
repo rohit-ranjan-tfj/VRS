@@ -20,6 +20,7 @@
                 {% if order.status == 'NO' %}
                 <form method="post" >
                     <input type="submit" class="btn btn-info" value="Return Order ID {{ order.id }}" name="Return Order">
+                    <input type="submit" class="btn btn-info" value="Generate Receipt for Order ID {{ order.id }}" name="Generate Receipt">
                 </form>
                 {% endif %}
             </td>
