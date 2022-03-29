@@ -11,6 +11,9 @@
     {{ wtf.quick_form(form) }}
     <br>
     {% endif %}
+    {% if movies %}
+    <h1>Our Offerings</h1>
+    {% endif %}
     {% for movie in movies %}
         {% include '_movie.html' %}
     {% endfor %}
