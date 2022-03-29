@@ -5,6 +5,7 @@ from app import db
 from flask import flash
 from fpdf import FPDF
 import os
+import statistics
 
 # Utility function to implement necessary changes in the database when a movie is rented.
 def rent_movie(user_id, movie_id, qty=1):
@@ -179,3 +180,18 @@ def audit():
 
     except KeyError as e:
         flash(e)
+
+def generate_reccomendations(user):
+    orders = Order.query.filter_by(user_id=user.id).all()
+    if orders is None:
+        return None
+    genre_list=[]
+    for order in orders:
+        movie = Movie.query.filter_by(id=order.movie_id).first()
+        genre_list.append(movie.genre)
+    try:
+        fav_genre = statistics.mode(genre_list)
+    except:
+        fav_genre = max([p[0] for p in statistics._counts(genre_list)])
+    rec_movies = Movie.query.filter_by(genre=fav_genre).order_by(Movie.rating.desc()).all()
+    return rec_movies

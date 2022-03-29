@@ -11,6 +11,12 @@
     {{ wtf.quick_form(form) }}
     <br>
     {% endif %}
+    {% if rec_movies %}
+        <h1>Recommended Movies</h1>
+        {% for movie in rec_movies %}
+            {% include '_movie.html' %}
+        {% endfor %}
+    {% endif %}
     {% for movie in movies %}
         {% include '_movie.html' %}
     {% endfor %}

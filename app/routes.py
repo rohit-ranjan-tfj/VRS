@@ -56,8 +56,8 @@ def index_user():
 
     if str(request.form.get("Generate Receipt"))[:16] == "Generate Receipt":
         generate_receipt(int(str(request.form.get('Generate Receipt'))[30:]))
-    
-    return render_template('index.html', title='Home')
+    rec_movies = generate_reccomendations(current_user)
+    return render_template('index.html', title='Home',rec_movies=rec_movies)
 
 # Dashboard for staff user
 @app.route('/index_staff', methods=['GET', 'POST'])
@@ -137,7 +137,7 @@ def index_manager():
     
     if request.form.get("Audit") == "Audit":
         audit()
-
+    
     return render_template('index.html', title='Home')
                                                      
 # The landing page.
