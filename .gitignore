@@ -39,5 +39,5 @@ nosetests.xml
 .pydevproject
 
 venv
-# app.db
+app.db
 vrs.log*
