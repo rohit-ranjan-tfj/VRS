@@ -41,6 +41,9 @@
         <input type="submit" class="btn btn-info" value="View Staff" name="View Staff">
         <input type="submit" class="btn btn-info" value="Audit" name="Audit">
         {% endif %} 
+        {% if current_user.user_cat=='staff' %}
+        <input type="submit" class="btn btn-info" value="View Users" name="View Users">
+        {% endif %}
     </form>
     {% else %}
     <form method="post" >
