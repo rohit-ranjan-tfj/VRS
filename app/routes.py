@@ -1,3 +1,5 @@
+# This file contains all the route registrations for the application.
+# Routes are called when a specific url is requested by the user.
 from datetime import datetime
 from locale import getlocale
 from flask import render_template, flash, redirect, url_for, request
@@ -10,7 +12,7 @@ from app.email import send_password_reset_email
 from app.functions import *
 from flask import g
 
-
+# Required setup for the search bar.
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
@@ -20,7 +22,7 @@ def before_request():
     g.search_form = SearchForm()
     g.locale = str(getlocale())
 
-
+# Dashboard for customer user.
 @app.route('/index_user', methods=['GET', 'POST'])
 @login_required
 def index_user():
@@ -57,7 +59,7 @@ def index_user():
     
     return render_template('index.html', title='Home')
 
-
+# Dashboard for staff user
 @app.route('/index_staff', methods=['GET', 'POST'])
 @login_required
 def index_staff():
@@ -65,7 +67,7 @@ def index_staff():
         return redirect(url_for('add_movie'))
     return render_template('index.html', title='Home')
 
-
+# Dashboard for manaager user.
 @app.route('/index_manager', methods=['GET', 'POST'])
 @login_required
 def index_manager():
@@ -138,11 +140,12 @@ def index_manager():
 
     return render_template('index.html', title='Home')
                                                      
-
+# The landing page.
 @app.route('/', methods=['GET', 'POST'])
 def landing():
     return redirect(url_for('explore'))
 
+# All movies can be explored via the explore page.
 @app.route('/explore', methods=['GET', 'POST'])
 def explore():
     if str(request.form.get('Rent Movie'))[:10] == 'Rent Movie':
@@ -157,7 +160,7 @@ def explore():
     return render_template('explore.html', title='Explore', movies=movies.items,
                            next_url=next_url, prev_url=prev_url)
 
-
+# Login page.
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated :
@@ -176,13 +179,13 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
-
+# Logout page.
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     logout_user()
     return redirect(url_for('explore'))
 
-
+# Registration page for customer user.
 @app.route('/register', methods=['GET', 'POST'])
 def register(user_cat = "user"):
     if current_user.is_authenticated:
@@ -198,7 +201,7 @@ def register(user_cat = "user"):
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-
+# Registration page for staff user.
 @app.route('/staff_register', methods=['GET', 'POST'])
 def staff_register(user_cat = "staff"):
     if current_user.is_authenticated:
@@ -213,7 +216,7 @@ def staff_register(user_cat = "staff"):
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-
+# Reset Password request page.
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
     if current_user.is_authenticated:
@@ -228,7 +231,7 @@ def reset_password_request():
     return render_template('reset_password_request.html',
                            title='Reset Password', form=form)
 
-
+# Reset Password page.
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     if current_user.is_authenticated:
@@ -244,7 +247,7 @@ def reset_password(token):
         return redirect(url_for('login'))
     return render_template('reset_password.html', form=form)
 
-
+# Personal profile for each user.
 @app.route('/user/<username>', methods=['GET', 'POST'])
 @login_required
 def user(username):
@@ -252,7 +255,7 @@ def user(username):
     page = request.args.get('page', 1, type=int)
     return render_template('user.html', user=user)
 
-
+# Personal page for each movie.
 @app.route('/movie/<id>', methods=['GET', 'POST'])
 def movie(id):
     if str(request.form.get('Rent Movie'))[:10] == 'Rent Movie':
@@ -271,7 +274,7 @@ def movie(id):
     return render_template('movie.html', movie=movie, movies=movies.items,
                            next_url=next_url, prev_url=prev_url)
 
-
+# Edit Profile page.
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
@@ -288,7 +291,7 @@ def edit_profile():
     return render_template('edit_profile.html', title='Edit Profile',
                            form=form)
 
-
+# Edit Movie page.
 @app.route('/edit_movie/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_movie(id):
@@ -326,7 +329,7 @@ def edit_movie(id):
     return render_template('add_movie.html', title='Edit Movie',
                            form=form)
 
-
+# Add funds page.
 @app.route('/add_funds', methods=['GET', 'POST'])
 @login_required
 def add_funds():
@@ -341,7 +344,7 @@ def add_funds():
     return render_template('add_funds.html', title='Add Funds',
                            form=form)
 
-
+# Add stock page.
 @app.route('/add_stock', methods=['GET', 'POST'])
 @login_required
 def add_stock():
@@ -359,7 +362,7 @@ def add_stock():
     return render_template('add_funds.html', title='Add Stock of Movie',
                            form=form)
 
-
+# Add movie page.
 @app.route('/add_movie', methods=['GET', 'POST'])
 @login_required
 def add_movie():
@@ -374,7 +377,7 @@ def add_movie():
         return redirect(url_for('add_movie'))
     return render_template('add_movie.html', title='Home', form=form)
 
-
+# Search page.
 @app.route('/search')
 def search():
     if not g.search_form.validate():

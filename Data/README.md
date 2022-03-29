@@ -1,0 +1,1 @@
+This folder contains dummy data that can be used to test our VRS.

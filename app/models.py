@@ -1,3 +1,4 @@
+# All SQLAlchemy Database classes are defined here.
 from datetime import datetime, timedelta
 from hashlib import md5
 from re import S
@@ -12,7 +13,8 @@ from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
 from sqlalchemy import Interval
 
-
+# A Mixin Class is implemented to handle the search functionality and its changes on the databases.
+# The search functionality is implemented in the search.py file.
 class SearchableMixin(object):
     @classmethod
     def search(cls, expression, page, per_page):
@@ -54,7 +56,9 @@ class SearchableMixin(object):
 db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
 db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
 
-
+# The User Database.
+# The UserMixin class handles the authentication and its changes on the databases.
+# The same database stores all the stakeholders of the VRS differentiated by user_cat column
 class User(UserMixin, db.Model):
     user_cat = db.Column(db.String(64), index=True)
     id = db.Column(db.Integer, primary_key=True)
@@ -98,7 +102,7 @@ class User(UserMixin, db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
-
+# Movies database.
 class Movie(SearchableMixin,db.Model):
     __searchable__ = ['name', 'genre', 'rating', 'price', 'description']
     id = db.Column(db.Integer, primary_key=True)
@@ -114,8 +118,7 @@ class Movie(SearchableMixin,db.Model):
     def __repr__(self):
         return '<Movie {} {} {} {} {}>'.format(self.id, self.name, self.genre, self.rating, self.price)
 
-
-
+# Orders database.
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

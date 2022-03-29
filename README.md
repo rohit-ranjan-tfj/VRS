@@ -1,4 +1,6 @@
-# Welcome to VRS!
+# Welcome to Video Rental System!
+
+The VRS was implemented as a course project under Prof. Abir Das and Prof. Sourangshu Bhattacharya for ``CS29202 SOFTWARE ENGINEERING LABORATORY`` in Spring '22.
 
 ## Run Instructions
 ```

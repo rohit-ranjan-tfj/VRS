@@ -1,1 +1,1 @@
-Generic single-database configuration.
+This folder contains the working files for flask-migrate. We have used flask-migrate to implement flexible databases. 

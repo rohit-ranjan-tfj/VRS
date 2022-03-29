@@ -1,3 +1,5 @@
+# Utility functions to email users when they setup their account or reset password
+# Fuctionality is activated when a MAIL SERVER is setup in the config.py file
 from threading import Thread
 from flask import render_template
 from flask_mail import Message

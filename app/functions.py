@@ -1,3 +1,4 @@
+# Utility functions that are called to perform tasks when respective buttons are pressed.
 from datetime import datetime
 from app.models import User, Movie, Order
 from app import db
@@ -5,6 +6,7 @@ from flask import flash
 from fpdf import FPDF
 import os
 
+# Utility function to implement necessary changes in the database when a movie is rented.
 def rent_movie(user_id, movie_id, qty=1):
     try:
         #get movie details
@@ -31,6 +33,7 @@ def rent_movie(user_id, movie_id, qty=1):
     except ValueError as e:
         flash(e)
 
+# Utility function to generate a PDF receipt of the order of a user.
 def generate_receipt(order_id):
     try:
         order_obj = Order.query.filter_by(id=order_id).first()
@@ -69,6 +72,7 @@ def generate_receipt(order_id):
     except KeyError as e:
         flash(e)
 
+# Utility function to return an outstanding order.
 def return_movie( order_id):
     try:
         
@@ -88,6 +92,7 @@ def return_movie( order_id):
     except ValueError as e:
         flash(e)
 
+# Utility function to return a list of all orders that the user has created on the VRS.
 def view_orders(user_id):
     try:
         user_obj = User.query.filter_by(id=user_id).first()
@@ -104,6 +109,7 @@ def view_orders(user_id):
         flash(e)
     return None
 
+# Utility function to search for a movie by its indexed fields.
 def search_movies(keyword):
     for movie in Movie.query.order_by(Movie.name):
         if keyword in movie.name or keyword in movie.genre or keyword in movie.description:
@@ -115,7 +121,7 @@ def search_movies(keyword):
             flash("\n")
     flash("Search complete.")
     
-    
+# Utility function to generate a PDF audit report of all orders on the VRS.
 def audit():
     auditpdf = FPDF()
     try:
