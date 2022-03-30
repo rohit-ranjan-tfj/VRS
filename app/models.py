@@ -97,6 +97,18 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
 
+    def getName(self):
+        return self.username
+    
+    def getCategory(self):
+        return self.user_cat
+    
+    def setName(self, name):
+        self.username = name
+    
+    def getEmail(self):
+        return self.email
+
 
 @login.user_loader
 def load_user(id):
@@ -118,6 +130,18 @@ class Movie(SearchableMixin,db.Model):
     def __repr__(self):
         return '<Movie {} {} {} {} {}>'.format(self.id, self.name, self.genre, self.rating, self.price)
 
+    def getName(self):
+        return self.name
+
+    def getDescription(self):
+        return self.description
+    
+    def getPrice(self):
+        return self.price
+
+    def getID(self):
+        return self.id
+
 # Orders database.
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -132,6 +156,30 @@ class Order(db.Model):
     
     def __repr__(self):
         return '<Order {} {} {} {}>'.format(self.id, self.user_id, self.movie_id, self.timestamp)
+
+    def getID(self):
+        return self.id
+
+    def getUserID(self):
+        return self.user_id
+
+    def getMovieID(self):
+        return self.movie_id
+
+    def getTimestamp(self):
+        return self.timestamp
+    
+    def getDeadline(self):
+        return self.deadline
+
+    def getReturned(self):
+        return self.returned
+    
+    def getStatus(self):
+        return self.status
+    
+    def getPrice(self):
+        return self.price
 
 
     
