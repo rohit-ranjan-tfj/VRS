@@ -145,7 +145,7 @@ def audit():
                 revenue_returned += order.price
         auditpdf.set_font('Arial', 'B', 16)
         auditpdf.cell(200, 10, 'Total Revenue: Rs. ' + str(total), 0, 1, 'C')
-        auditpdf.cell(200, 10, str(100 - (revenue_returned/total*100)) + '% of Rentals Outstanding.', 0, 1, 'C')
+        auditpdf.cell(200, 10, str(int(100 - (revenue_returned/total*100))) + '% of Rentals Outstanding.', 0, 1, 'C')
         auditpdf.cell(200, 10, 'Top Revenue Generators:', 0, 1, 'C')
         auditpdf.set_font('Arial', '', 12)
         num = max(len(movie_revenue_dict),5)
@@ -192,6 +192,9 @@ def generate_reccomendations(user):
     try:
         fav_genre = statistics.mode(genre_list)
     except:
-        fav_genre = max([p[0] for p in statistics._counts(genre_list)])
+        try:
+            fav_genre = max([p[0] for p in statistics._counts(genre_list)])
+        except :
+            return None
     rec_movies = Movie.query.filter_by(genre=fav_genre).order_by(Movie.rating.desc()).all()
     return rec_movies

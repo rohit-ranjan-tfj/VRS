@@ -26,6 +26,9 @@ def before_request():
 @app.route('/index_user', methods=['GET', 'POST'])
 @login_required
 def index_user():
+    if str(request.form.get('Rent Movie'))[:10] == 'Rent Movie':
+        rent_movie(current_user.id, int(str(request.form.get('Rent Movie'))[14:]))
+
     if request.form.get('View Orders') == 'View Orders':
         orders = view_orders(current_user.id)
         order_list=[]
@@ -431,8 +434,14 @@ def add_movie():
     return render_template('add_movie.html', title='Home', form=form)
 
 # Search page.
-@app.route('/search')
+@app.route('/search', methods=['GET', 'POST'])
 def search():
+    if str(request.form.get('Rent Movie'))[:10] == 'Rent Movie':
+        if(current_user.is_authenticated):
+            rent_movie(current_user.id, int(str(request.form.get('Rent Movie'))[14:]))
+        else:
+            flash("Login to rent the movie.")
+        
     if not g.search_form.validate():
         return redirect(url_for('explore'))
     page = request.args.get('page', 1, type=int)
