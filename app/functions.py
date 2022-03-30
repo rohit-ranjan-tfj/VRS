@@ -47,7 +47,7 @@ def generate_receipt(order_id):
             receipt.set_font('Arial', 'B', 16)
             receipt.cell(200, 10, 'VRS Movie Rentals', 0, 1, 'C')
             receipt.cell(200, 10, 'Receipt', 0, 1, 'C')
-            receipt.image(movie_obj.img_path, x=92)
+            receipt.image(movie_obj.img_path, x=98, w=25, h=25)
             receipt.set_font('Arial', '', 12)
             receipt.cell(200, 10, 'Order ID: {}'.format(order_obj.id), 0, 1, 'L')
             receipt.cell(200, 10, txt=f"Customer ID: {order_obj.user_id}", ln=1, align="L")
