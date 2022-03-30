@@ -5,6 +5,7 @@ The VRS was implemented as a course project under Prof. Abir Das and Prof. Soura
 ## Run Instructions
 ```
 $ sudo systemctl start elasticsearch.service
+$ flask db migrate
 $ flask db upgrade
 $ flask run
 ```
